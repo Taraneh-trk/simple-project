@@ -79,33 +79,52 @@ def get_entery():
     enter_major.delete(0,END)
 
 def insert():
-    stu_db.insert(student)
+    try:
+        stu_db.insert(student)
+        lbl_action.config(text='last action : inserted data sucsesfully',fg='blue')
+    except:
+        lbl_action.config(text='last action : inserted data went wrong try again',fg='red')
 
 def delete(): 
-    id_ = student[0]
-    stu_db.delete(id_)
+    try:
+        id_ = student[0]
+        stu_db.delete(id_)
+        lbl_action.config(text='last action : deleted data sucsesfully',fg='blue')
+    except:
+        lbl_action.config(text='last action : deleted data went wrong try again',fg='red')
+
 
 def show():
-    i=0
-    data_temp = list(stu_db.show_all())
-    text.delete("1.0","end")
-    for data_item in data_temp:
-        data = {'id':data_item[0],'name':data_item[1],'family':data_item[2],
-            'stu_number':data_item[3],'major':data_item[4]}
-        text.insert(INSERT,f'{i} -> ');i+=1
-        text.insert(INSERT,data)
-        text.insert(INSERT,'\n')
+    try:
+        i=1
+        data_temp = list(stu_db.show_all())
+        text.delete("1.0","end")
+        for data_item in data_temp:
+            data = {'id':data_item[0],'name':data_item[1],'family':data_item[2],
+                'stu_number':data_item[3],'major':data_item[4]}
+            text.insert(INSERT,f'{i} -> ');i+=1
+            text.insert(INSERT,data)
+            text.insert(INSERT,'\n')
+        lbl_action.config(text='last action : show data sucsesfully',fg='blue')
+    except:
+        lbl_action.config(text='last action : show data went wrong try again',fg='red')
+
 
 def search():
-    id_ = student[0]
-    data_temp = list(stu_db.search(id_))
-    text.delete("1.0","end")
-    if data_temp[0]==-1:
-        text.insert(INSERT,'not found')
-    else:
-        data = {'id':data_temp[0][0],'name':data_temp[0][1],'family':data_temp[0][2],
-            'stu_number':data_temp[0][3],'major':data_temp[0][4]}
-        text.insert(INSERT,data)
+    try:
+        id_ = student[0]
+        data_temp = list(stu_db.search(id_))
+        text.delete("1.0","end")
+        if data_temp[0]==-1:
+            text.insert(INSERT,'not found')
+        else:
+            data = {'id':data_temp[0][0],'name':data_temp[0][1],'family':data_temp[0][2],
+                'stu_number':data_temp[0][3],'major':data_temp[0][4]}
+            text.insert(INSERT,data)
+        lbl_action.config(text='last action : search data sucsesfully',fg='blue')
+    except:
+        lbl_action.config(text='last action : search data went wrong try again',fg='red')
+
 
 
 if __name__=='__main__':
@@ -125,31 +144,43 @@ if __name__=='__main__':
     menu_bar.add_command(label='show',command=show)
     menu_bar.add_command(label='search',command=search)
     window.config(menu=menu_bar)
+    # creat frame
+    frame_entry = LabelFrame(window,text='entry box',fg='blue')
+    frame_entry.grid(row=1,column=3,ipadx=5,ipady=5)
     # creat entry
-    lbl_id = Label(window,text='id')
+    lbl_id = Label(frame_entry,text='id')
     lbl_id.grid(row=2,column=0)
-    enter_id = Entry(window)
+    enter_id = Entry(frame_entry)
     enter_id.grid(row=2,column=1,padx=1,pady=1)
-    lbl_name = Label(window,text='name')
+    lbl_name = Label(frame_entry,text='name')
     lbl_name.grid(row=4,column=0)
-    enter_name = Entry(window)
+    enter_name = Entry(frame_entry)
     enter_name.grid(row=4,column=1,padx=1,pady=1)
-    lbl_family = Label(window,text='family')
+    lbl_family = Label(frame_entry,text='family')
     lbl_family.grid(row=6,column=0)
-    enter_family = Entry(window)
+    enter_family = Entry(frame_entry)
     enter_family.grid(row=6,column=1,padx=1,pady=1)
-    lbl_stu_number = Label(window,text='stu_number')
+    lbl_stu_number = Label(frame_entry,text='stu_number')
     lbl_stu_number.grid(row=8,column=0)
-    enter_stu_number = Entry(window)
+    enter_stu_number = Entry(frame_entry)
     enter_stu_number.grid(row=8,column=1,padx=1,pady=1)
-    lbl_major = Label(window,text='major')
+    lbl_major = Label(frame_entry,text='major')
     lbl_major.grid(row=10,column=0)
-    enter_major = Entry(window)
+    enter_major = Entry(frame_entry)
     enter_major.grid(row=10,column=1,padx=1,pady=1)
-    btn = Button(window,text='enter data',command=get_entery)
+    btn = Button(frame_entry,text='enter data',command=get_entery)
     btn.grid(row=11,column=0)
+    lbl_action = Label(frame_entry,text='            last action : none                  ')
+    lbl_action.grid(row=12,column=0)
+    # creat frame
+    frame_inform = LabelFrame(window,text='show box',fg='blue')
+    frame_inform.grid(row=2,column=3,ipadx=5,ipady=5,padx=100,pady=5)
     # creat textbox
-    text = Text(window,height=25,width=100)
-    text.grid(row=12,rowspan=6,column=2)
+    text = Text(frame_inform,height=25,width=100)
+    text.pack(padx=5)
+    # creat scrollbar
+    # scrolbar_text = Scrollbar(window)
+    # scrolbar_text.grid(column=4)
+    # scrolbar_text.config(command=text.yview)
     
     window.mainloop()
