@@ -103,7 +103,12 @@ def show():
             data = {'id':data_item[0],'name':data_item[1],'family':data_item[2],
                 'stu_number':data_item[3],'major':data_item[4]}
             text.insert(INSERT,f'{i} -> ');i+=1
-            text.insert(INSERT,data)
+            for key,value in data.items():
+                text.insert(INSERT,key)
+                text.insert(INSERT,' : ')
+                text.insert(INSERT,value)
+                if key!='major':
+                    text.insert(INSERT,'\t  ,\t   ')
             text.insert(INSERT,'\n')
         lbl_action.config(text='last action : show data sucsesfully',fg='blue')
     except:
@@ -118,9 +123,15 @@ def search():
         if data_temp[0]==-1:
             text.insert(INSERT,'not found')
         else:
+            text.insert(INSERT,'hole data about searched person : \n')
             data = {'id':data_temp[0][0],'name':data_temp[0][1],'family':data_temp[0][2],
                 'stu_number':data_temp[0][3],'major':data_temp[0][4]}
-            text.insert(INSERT,data)
+            for key,value in data.items():
+                text.insert(INSERT,key)
+                text.insert(INSERT,' : ')
+                text.insert(INSERT,value)
+                if key!='major':
+                    text.insert(INSERT,'\t  ,\t   ')
         lbl_action.config(text='last action : search data sucsesfully',fg='blue')
     except:
         lbl_action.config(text='last action : search data went wrong try again',fg='red')
@@ -170,7 +181,7 @@ if __name__=='__main__':
     enter_major.grid(row=10,column=1,padx=1,pady=1)
     btn = Button(frame_entry,text='enter data',command=get_entery)
     btn.grid(row=11,column=0)
-    lbl_action = Label(frame_entry,text='            last action : none                  ')
+    lbl_action = Label(frame_entry,text='              last action : none                    ')
     lbl_action.grid(row=12,column=0)
     # creat frame
     frame_inform = LabelFrame(window,text='show box',fg='blue')
