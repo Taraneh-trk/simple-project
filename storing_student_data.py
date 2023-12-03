@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 import sqlite3
+
 student = (0,0,0,0,0)
 class db:
     # def __init__(self):
@@ -15,7 +16,7 @@ class db:
         'id' INTEGER,
         'name' TEXT,
         'family' TEXT,
-        'stu-number' INTEGER,
+        'stu_number' INTEGER,
         'major' TEXT
         );
         """
@@ -54,20 +55,49 @@ class db:
             self._db_conection.rollback()
             print(e)
     
-    def search(self,id):
-        serch="""
-        select * from student where id=?
-        """
-        try:
-            self._db_cursor.execute(serch,(id,))
-            data = self._db_cursor.fetchall()
-            if(len(data)==0):
+    def search(self,data,pos):
+        if pos==0:
+            serch="""
+            select * from student where id=?
+            """
+            try:
+                self._db_cursor.execute(serch,(data,))
+                data = self._db_cursor.fetchall()
+                if(len(data)==0):
+                    return [-1]
+                return data
+            except sqlite3.Error as e:
+                self._db_conection.rollback()
+                print(e)
                 return [-1]
-            return data
-        except sqlite3.Error as e:
-            self._db_conection.rollback()
-            print(e)
-            return [-1]
+        elif pos==1:
+            serch="""
+            select * from student where family=?
+            """
+            try:
+                self._db_cursor.execute(serch,(data,))
+                data = self._db_cursor.fetchall()
+                if(len(data)==0):
+                    return [-1]
+                return data
+            except sqlite3.Error as e:
+                self._db_conection.rollback()
+                print(e)
+                return [-1]
+        elif pos==2:
+            serch="""
+            select * from student where stu_number=?
+            """
+            try:
+                self._db_cursor.execute(serch,(data,))
+                data = self._db_cursor.fetchall()
+                if(len(data)==0):
+                    return [-1]
+                return data
+            except sqlite3.Error as e:
+                self._db_conection.rollback()
+                print(e)
+                return [-1]
 
 def get_entery():
     global student
@@ -79,6 +109,11 @@ def get_entery():
     enter_major.delete(0,END)
 
 def insert():
+    if student==(0,0,0,0,0):
+        text.delete("1.0","end")
+        text.insert(INSERT,'there is no entered data')
+        lbl_action.config(text='last action : inserted data went wrong try again',fg='red')
+        return
     try:
         stu_db.insert(student)
         lbl_action.config(text='last action : inserted data sucsesfully',fg='blue')
@@ -86,6 +121,11 @@ def insert():
         lbl_action.config(text='last action : inserted data went wrong try again',fg='red')
 
 def delete(): 
+    if student==(0,0,0,0,0):
+        text.delete("1.0","end")
+        text.insert(INSERT,'there is no entered data')
+        lbl_action.config(text='last action : deleted data went wrong try again',fg='red')
+        return 
     try:
         id_ = student[0]
         stu_db.delete(id_)
@@ -115,10 +155,15 @@ def show():
         lbl_action.config(text='last action : show data went wrong try again',fg='red')
 
 
-def search():
+def search_id():
+    if student==(0,0,0,0,0):
+        text.delete("1.0","end")
+        text.insert(INSERT,'there is no entered data')
+        lbl_action.config(text='last action : search data went wrong try again',fg='red')
+        return
     try:
         id_ = student[0]
-        data_temp = list(stu_db.search(id_))
+        data_temp = list(stu_db.search(id_,0))
         text.delete("1.0","end")
         if data_temp[0]==-1:
             text.insert(INSERT,'not found')
@@ -136,7 +181,57 @@ def search():
     except:
         lbl_action.config(text='last action : search data went wrong try again',fg='red')
 
+def search_famiy():
+    if student==(0,0,0,0,0):
+        text.delete("1.0","end")
+        text.insert(INSERT,'there is no entered data')
+        lbl_action.config(text='last action : search data went wrong try again',fg='red')
+        return
+    try:
+        family_ = student[2]
+        data_temp = list(stu_db.search(family_,1))
+        text.delete("1.0","end")
+        if data_temp[0]==-1:
+            text.insert(INSERT,'not found')
+        else:
+            text.insert(INSERT,'hole data about searched person : \n')
+            data = {'id':data_temp[0][0],'name':data_temp[0][1],'family':data_temp[0][2],
+                'stu_number':data_temp[0][3],'major':data_temp[0][4]}
+            for key,value in data.items():
+                text.insert(INSERT,key)
+                text.insert(INSERT,' : ')
+                text.insert(INSERT,value)
+                if key!='major':
+                    text.insert(INSERT,'\t  ,\t   ')
+        lbl_action.config(text='last action : search data sucsesfully',fg='blue')
+    except:
+        lbl_action.config(text='last action : search data went wrong try again',fg='red')
 
+def search_stuNumber():
+    if student==(0,0,0,0,0):
+        text.delete("1.0","end")
+        text.insert(INSERT,'there is no entered data')
+        lbl_action.config(text='last action : search data went wrong try again',fg='red')
+        return
+    try:
+        stu_number_ = student[3]
+        data_temp = list(stu_db.search(stu_number_,2))
+        text.delete("1.0","end")
+        if data_temp[0]==-1:
+            text.insert(INSERT,'not found')
+        else:
+            text.insert(INSERT,'hole data about searched person : \n')
+            data = {'id':data_temp[0][0],'name':data_temp[0][1],'family':data_temp[0][2],
+                'stu_number':data_temp[0][3],'major':data_temp[0][4]}
+            for key,value in data.items():
+                text.insert(INSERT,key)
+                text.insert(INSERT,' : ')
+                text.insert(INSERT,value)
+                if key!='major':
+                    text.insert(INSERT,'\t  ,\t   ')
+        lbl_action.config(text='last action : search data sucsesfully',fg='blue')
+    except:
+        lbl_action.config(text='last action : search data went wrong try again',fg='red')
 
 if __name__=='__main__':
     stu_db = db()
@@ -153,7 +248,14 @@ if __name__=='__main__':
     menu_bar.add_command(label='insert',command=insert)
     menu_bar.add_command(label='delete',command=delete)
     menu_bar.add_command(label='show',command=show)
-    menu_bar.add_command(label='search',command=search)
+    # menu_bar.add_command(label='search',command=search)
+    search_menu = Menu(menu_bar,tearoff=0)
+    search_menu.add_command(label='id',command=search_id)
+    search_menu.add_command(label='familyName',command=search_famiy)
+    search_menu.add_command(label='stu-number',command=search_stuNumber)
+    menu_bar.add_cascade(label='search',menu=search_menu)
+    # creat exit button in menu
+    menu_bar.add_command(label='exit',command=quit)
     window.config(menu=menu_bar)
     # creat frame
     frame_entry = LabelFrame(window,text='entry box',fg='blue')
@@ -189,9 +291,5 @@ if __name__=='__main__':
     # creat textbox
     text = Text(frame_inform,height=25,width=100)
     text.pack(padx=5)
-    # creat scrollbar
-    # scrolbar_text = Scrollbar(window)
-    # scrolbar_text.grid(column=4)
-    # scrolbar_text.config(command=text.yview)
-    
+
     window.mainloop()
